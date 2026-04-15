@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\ColdWarHistory.Game.Application\ColdWarHistory.Game.Application.csproj" />
+    <ProjectReference Include="..\ColdWarHistory.Game.Domain\ColdWarHistory.Game.Domain.csproj" />
+    <ProjectReference Include="..\..\..\Shared\ColdWarHistory.BuildingBlocks.Infrastructure\ColdWarHistory.BuildingBlocks.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\Shared\ColdWarHistory.BuildingBlocks.Contracts\ColdWarHistory.BuildingBlocks.Contracts.csproj" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>
