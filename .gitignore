@@ -46,6 +46,8 @@ project.lock.json
 project.fragment.lock.json
 artifacts/
 **/Properties/launchSettings.json
+backend/runtime/
+backend/src/**/Class1.cs
 
 # VS Code
 .vscode/
