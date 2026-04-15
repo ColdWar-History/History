@@ -128,6 +128,7 @@ public sealed class GameService(
             : $"Ожидалось решение '{message.ExpectedDecision}'.";
 
         session.RecordResolution(new ShiftResolution(request.MessageId, request.Decision, isCorrect, score, explanation));
+        await repository.StoreShiftAsync(session, cancellationToken);
 
         if (session.IsCompleted && currentUser.IsAuthenticated)
         {

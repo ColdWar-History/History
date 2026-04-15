@@ -8,7 +8,7 @@ builder.WebHost.UseUrls(ServiceEndpoints.Content);
 
 builder.Services.AddColdWarApiDefaults();
 builder.Services.AddGatewayForwardedAuthentication();
-builder.Services.AddContentInfrastructure();
+builder.Services.AddContentInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 

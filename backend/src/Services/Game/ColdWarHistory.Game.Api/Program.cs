@@ -9,7 +9,7 @@ builder.WebHost.UseUrls(ServiceEndpoints.Game);
 
 builder.Services.AddColdWarApiDefaults();
 builder.Services.AddGatewayForwardedAuthentication();
-builder.Services.AddGameInfrastructure();
+builder.Services.AddGameInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 

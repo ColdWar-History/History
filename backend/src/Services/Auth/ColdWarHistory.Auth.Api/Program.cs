@@ -9,7 +9,7 @@ builder.WebHost.UseUrls(ServiceEndpoints.Auth);
 
 builder.Services.AddColdWarApiDefaults();
 builder.Services.AddGatewayForwardedAuthentication();
-builder.Services.AddAuthInfrastructure();
+builder.Services.AddAuthInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
