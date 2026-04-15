@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\ColdWarHistory.Content.Domain\ColdWarHistory.Content.Domain.csproj" />
+    <ProjectReference Include="..\..\..\Shared\ColdWarHistory.BuildingBlocks.Application\ColdWarHistory.BuildingBlocks.Application.csproj" />
+    <ProjectReference Include="..\..\..\Shared\ColdWarHistory.BuildingBlocks.Contracts\ColdWarHistory.BuildingBlocks.Contracts.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>
