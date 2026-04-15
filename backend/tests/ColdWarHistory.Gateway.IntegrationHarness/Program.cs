@@ -28,8 +28,21 @@ try
         await WaitForHealthAsync(httpClient, service.HealthUrl, TimeSpan.FromSeconds(30));
     }
 
-    var register = await (await httpClient.PostAsJsonAsync("/api/auth/register", new RegisterRequest("operator", "operator@cw.local", "Pass123!"))).Content.ReadFromJsonAsync<AuthTokensResponse>();
-    Ensure(register is not null, "Registration failed.");
+    var registerResponse = await httpClient.PostAsJsonAsync("/api/auth/register", new RegisterRequest("operator", "operator@cw.local", "Pass123!"));
+    AuthTokensResponse? register;
+    if (registerResponse.IsSuccessStatusCode)
+    {
+        register = await registerResponse.Content.ReadFromJsonAsync<AuthTokensResponse>();
+    }
+    else
+    {
+        var loginResponse = await httpClient.PostAsJsonAsync("/api/auth/login", new LoginRequest("operator", "Pass123!"));
+        register = loginResponse.IsSuccessStatusCode
+            ? await loginResponse.Content.ReadFromJsonAsync<AuthTokensResponse>()
+            : null;
+    }
+
+    Ensure(register is not null, "Registration/login failed.");
 
     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", register!.AccessToken);
 

@@ -1,0 +1,10 @@
+DROP TABLE IF EXISTS content.collection_cipher_codes;
+DROP TABLE IF EXISTS content.collection_events;
+DROP TABLE IF EXISTS content.collections;
+DROP TABLE IF EXISTS content.event_cipher_codes;
+DROP TABLE IF EXISTS content.event_participants;
+DROP TABLE IF EXISTS content.cipher_versions;
+DROP TABLE IF EXISTS content.cipher_related_events;
+DROP TABLE IF EXISTS content.historical_events;
+DROP TABLE IF EXISTS content.ciphers;
+DROP SCHEMA IF EXISTS content;

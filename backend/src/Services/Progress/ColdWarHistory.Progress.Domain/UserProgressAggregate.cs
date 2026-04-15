@@ -15,6 +15,25 @@ public sealed class UserProgressAggregate(Guid id, string userName) : AggregateR
     public IReadOnlyCollection<CryptoOperationEntry> Operations => _operations;
     public IReadOnlyCollection<AchievementEntry> Achievements => _achievements;
 
+    public UserProgressAggregate(
+        Guid id,
+        string userName,
+        int totalScore,
+        int challengesCompleted,
+        int correctChallenges,
+        int shiftReportsCompleted,
+        IEnumerable<CryptoOperationEntry> operations,
+        IEnumerable<AchievementEntry> achievements)
+        : this(id, userName)
+    {
+        TotalScore = totalScore;
+        ChallengesCompleted = challengesCompleted;
+        CorrectChallenges = correctChallenges;
+        ShiftReportsCompleted = shiftReportsCompleted;
+        _operations.AddRange(operations.OrderByDescending(item => item.ProcessedAt).Take(20));
+        _achievements.AddRange(achievements.OrderBy(item => item.UnlockedAt));
+    }
+
     public void Rename(string userName) => UserName = userName;
 
     public void RecordOperation(CryptoOperationEntry entry)

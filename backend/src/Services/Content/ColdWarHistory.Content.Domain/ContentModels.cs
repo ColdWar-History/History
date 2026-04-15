@@ -27,7 +27,8 @@ public sealed class CipherCard : AggregateRoot<Guid>
         string description,
         string example,
         IEnumerable<Guid> relatedEventIds,
-        PublicationStatus publicationStatus)
+        PublicationStatus publicationStatus,
+        IEnumerable<ContentVersion>? versions = null)
         : base(id)
     {
         Code = code;
@@ -40,6 +41,10 @@ public sealed class CipherCard : AggregateRoot<Guid>
         Example = example;
         PublicationStatus = publicationStatus;
         _relatedEventIds.AddRange(relatedEventIds);
+        if (versions is not null)
+        {
+            _versions.AddRange(versions.OrderBy(item => item.VersionNumber));
+        }
     }
 
     public string Code { get; private set; }

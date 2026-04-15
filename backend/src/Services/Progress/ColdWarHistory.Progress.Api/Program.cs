@@ -9,7 +9,7 @@ builder.WebHost.UseUrls(ServiceEndpoints.Progress);
 
 builder.Services.AddColdWarApiDefaults();
 builder.Services.AddGatewayForwardedAuthentication();
-builder.Services.AddProgressInfrastructure();
+builder.Services.AddProgressInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
