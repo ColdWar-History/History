@@ -3,10 +3,25 @@ using ColdWarHistory.BuildingBlocks.Api;
 using ColdWarHistory.BuildingBlocks.Contracts;
 using ColdWarHistory.Gateway.Api;
 
+const string frontendCorsPolicy = "Frontend";
+
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseUrls(ServiceEndpoints.Gateway);
 
 builder.Services.AddColdWarApiDefaults();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(frontendCorsPolicy, policy =>
+    {
+        policy
+            .WithOrigins(
+                "http://localhost:5173",
+                "http://127.0.0.1:5173",
+                "https://coldwar-history.github.io")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 builder.Services.AddHttpClient(nameof(ServiceEndpoints.Auth), client => client.BaseAddress = new Uri(ServiceEndpoints.Auth));
 builder.Services.AddHttpClient(ApiRoutes.Auth, client => client.BaseAddress = new Uri(ServiceEndpoints.Auth));
 builder.Services.AddHttpClient(ApiRoutes.Crypto, client => client.BaseAddress = new Uri(ServiceEndpoints.Crypto));
@@ -17,6 +32,7 @@ builder.Services.AddSingleton<GatewayProxyService>();
 
 var app = builder.Build();
 
+app.UseCors(frontendCorsPolicy);
 app.UseRequestAudit("gateway");
 
 app.MapGet("/", () => Results.Ok(new
