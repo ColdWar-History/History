@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text;
 using ColdWarHistory.BuildingBlocks.Application;
 
 namespace ColdWarHistory.BuildingBlocks.Infrastructure;
@@ -23,7 +24,16 @@ public sealed class JsonLinesAuditSink : IAuditSink
         await _semaphore.WaitAsync(cancellationToken);
         try
         {
-            await File.AppendAllTextAsync(_filePath, line + Environment.NewLine, cancellationToken);
+            await using var stream = new FileStream(
+                _filePath,
+                FileMode.Append,
+                FileAccess.Write,
+                FileShare.ReadWrite,
+                bufferSize: 4096,
+                useAsync: true);
+
+            await using var writer = new StreamWriter(stream, Encoding.UTF8);
+            await writer.WriteLineAsync(line.AsMemory(), cancellationToken);
         }
         finally
         {

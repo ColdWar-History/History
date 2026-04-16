@@ -19,6 +19,15 @@ var app = builder.Build();
 
 app.UseRequestAudit("gateway");
 
+app.MapGet("/", () => Results.Ok(new
+{
+    service = "ColdWarHistory Gateway",
+    status = "ok",
+    health = "/health",
+    openApi = "/openapi/v1.json",
+    frontend = "http://localhost:5173"
+}));
+
 app.MapGet("/health", async (GatewayProxyService proxyService, CancellationToken cancellationToken) =>
 {
     var clientFactory = app.Services.GetRequiredService<IHttpClientFactory>();
