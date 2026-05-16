@@ -2,12 +2,15 @@ namespace ColdWarHistory.BuildingBlocks.Contracts;
 
 public static class ServiceEndpoints
 {
-    public const string Gateway = "http://localhost:7000";
-    public const string Auth = "http://localhost:7001";
-    public const string Crypto = "http://localhost:7002";
-    public const string Content = "http://localhost:7003";
-    public const string Game = "http://localhost:7004";
-    public const string Progress = "http://localhost:7005";
+    public static string Gateway => GetEndpoint(nameof(Gateway), "http://localhost:7000");
+    public static string Auth => GetEndpoint(nameof(Auth), "http://localhost:7001");
+    public static string Crypto => GetEndpoint(nameof(Crypto), "http://localhost:7002");
+    public static string Content => GetEndpoint(nameof(Content), "http://localhost:7003");
+    public static string Game => GetEndpoint(nameof(Game), "http://localhost:7004");
+    public static string Progress => GetEndpoint(nameof(Progress), "http://localhost:7005");
+
+    private static string GetEndpoint(string serviceName, string fallback) =>
+        Environment.GetEnvironmentVariable($"ServiceEndpoints__{serviceName}") ?? fallback;
 }
 
 public static class ApiRoutes

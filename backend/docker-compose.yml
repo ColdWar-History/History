@@ -17,9 +17,11 @@ services:
       retries: 20
 
   migrate:
+    image: coldwarhistory/migrate:local
     build:
       context: .
       dockerfile: src/Tools/ColdWarHistory.DatabaseMigrator/Dockerfile
+      provenance: false
     environment:
       ConnectionStrings__Default: Host=postgres;Port=5432;Database=coldwarhistory;Username=postgres;Password=postgres
       MIGRATOR__Mode: up
@@ -28,6 +30,140 @@ services:
       postgres:
         condition: service_healthy
     restart: "no"
+
+  auth:
+    image: coldwarhistory/auth:local
+    build:
+      context: .
+      dockerfile: Dockerfile.service
+      provenance: false
+      args:
+        PROJECT_PATH: src/Services/Auth/ColdWarHistory.Auth.Api/ColdWarHistory.Auth.Api.csproj
+        SERVICE_DLL: ColdWarHistory.Auth.Api.dll
+    container_name: coldwar-auth
+    environment:
+      ServiceEndpoints__Auth: http://0.0.0.0:7001
+      ConnectionStrings__Default: Host=postgres;Port=5432;Database=coldwarhistory;Username=postgres;Password=postgres
+    ports:
+      - "7001:7001"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  progress:
+    image: coldwarhistory/progress:local
+    build:
+      context: .
+      dockerfile: Dockerfile.service
+      provenance: false
+      args:
+        PROJECT_PATH: src/Services/Progress/ColdWarHistory.Progress.Api/ColdWarHistory.Progress.Api.csproj
+        SERVICE_DLL: ColdWarHistory.Progress.Api.dll
+    container_name: coldwar-progress
+    environment:
+      ServiceEndpoints__Progress: http://0.0.0.0:7005
+      ConnectionStrings__Default: Host=postgres;Port=5432;Database=coldwarhistory;Username=postgres;Password=postgres
+    ports:
+      - "7005:7005"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  crypto:
+    image: coldwarhistory/crypto:local
+    build:
+      context: .
+      dockerfile: Dockerfile.service
+      provenance: false
+      args:
+        PROJECT_PATH: src/Services/Crypto/ColdWarHistory.Crypto.Api/ColdWarHistory.Crypto.Api.csproj
+        SERVICE_DLL: ColdWarHistory.Crypto.Api.dll
+    container_name: coldwar-crypto
+    environment:
+      ServiceEndpoints__Crypto: http://0.0.0.0:7002
+      ServiceEndpoints__Progress: http://progress:7005
+    ports:
+      - "7002:7002"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      progress:
+        condition: service_started
+
+  content:
+    image: coldwarhistory/content:local
+    build:
+      context: .
+      dockerfile: Dockerfile.service
+      provenance: false
+      args:
+        PROJECT_PATH: src/Services/Content/ColdWarHistory.Content.Api/ColdWarHistory.Content.Api.csproj
+        SERVICE_DLL: ColdWarHistory.Content.Api.dll
+    container_name: coldwar-content
+    environment:
+      ServiceEndpoints__Content: http://0.0.0.0:7003
+      ConnectionStrings__Default: Host=postgres;Port=5432;Database=coldwarhistory;Username=postgres;Password=postgres
+    ports:
+      - "7003:7003"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  game:
+    image: coldwarhistory/game:local
+    build:
+      context: .
+      dockerfile: Dockerfile.service
+      provenance: false
+      args:
+        PROJECT_PATH: src/Services/Game/ColdWarHistory.Game.Api/ColdWarHistory.Game.Api.csproj
+        SERVICE_DLL: ColdWarHistory.Game.Api.dll
+    container_name: coldwar-game
+    environment:
+      ServiceEndpoints__Game: http://0.0.0.0:7004
+      ServiceEndpoints__Crypto: http://crypto:7002
+      ServiceEndpoints__Progress: http://progress:7005
+      ConnectionStrings__Default: Host=postgres;Port=5432;Database=coldwarhistory;Username=postgres;Password=postgres
+    ports:
+      - "7004:7004"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      crypto:
+        condition: service_started
+      progress:
+        condition: service_started
+
+  gateway:
+    image: coldwarhistory/gateway:local
+    build:
+      context: .
+      dockerfile: Dockerfile.service
+      provenance: false
+      args:
+        PROJECT_PATH: src/Services/Gateway/ColdWarHistory.Gateway.Api/ColdWarHistory.Gateway.Api.csproj
+        SERVICE_DLL: ColdWarHistory.Gateway.Api.dll
+    container_name: coldwar-gateway
+    environment:
+      ServiceEndpoints__Gateway: http://0.0.0.0:7000
+      ServiceEndpoints__Auth: http://auth:7001
+      ServiceEndpoints__Crypto: http://crypto:7002
+      ServiceEndpoints__Content: http://content:7003
+      ServiceEndpoints__Game: http://game:7004
+      ServiceEndpoints__Progress: http://progress:7005
+    ports:
+      - "7000:7000"
+    depends_on:
+      auth:
+        condition: service_started
+      crypto:
+        condition: service_started
+      content:
+        condition: service_started
+      game:
+        condition: service_started
+      progress:
+        condition: service_started
 
 volumes:
   pgdata:
