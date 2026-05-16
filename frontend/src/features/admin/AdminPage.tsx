@@ -27,7 +27,7 @@ function createCipherDraft(editedBy: string): UpsertCipherCardRequest {
     example: "",
     relatedEventIds: [],
     editedBy,
-    changeSummary: "Создано из фронтенда"
+    changeSummary: "Создано в редакторе"
   };
 }
 
@@ -114,7 +114,7 @@ export function AdminPage() {
       example: selected.example,
       relatedEventIds: selected.relatedEventIds,
       editedBy: editorName,
-      changeSummary: "Обновлено из фронтенда"
+      changeSummary: "Обновлено в редакторе"
     });
   }, [ciphers, editorName, selectedCipherId]);
 
@@ -224,7 +224,7 @@ export function AdminPage() {
         await api.content.publishCollection(id, status);
       }
 
-      setNotice(`Статус изменён на ${status}.`);
+      setNotice(`Статус изменён на «${publicationLabel(status)}».`);
       await loadAll();
     } catch (publishError) {
       setError(formatApiError(publishError));
@@ -236,12 +236,12 @@ export function AdminPage() {
   return (
     <div className="page-stack">
       <PageIntro
-        eyebrow="Editor Console"
-        title="Контентный CRUD для ролей editor и admin."
-        description="Обычному пользователю экран не виден. Здесь можно создавать, редактировать и публиковать шифры, события и подборки через gateway."
+        eyebrow="Редактор"
+        title="Управление материалами проекта."
+        description="Здесь можно создавать, редактировать и публиковать шифры, исторические события и тематические подборки."
       />
 
-      {loading ? <LoadingBlock label="Загружаю весь контент без фильтра publishedOnly..." /> : null}
+      {loading ? <LoadingBlock label="Загружаю материалы редактора..." /> : null}
       {error ? <ErrorBlock message={error} /> : null}
       {notice ? <div className="status-inline">{notice}</div> : null}
 
@@ -286,7 +286,7 @@ export function AdminPage() {
           <Panel subtitle="Редактирование карточки шифра" title={selectedCipherId ? "Изменить шифр" : "Новый шифр"}>
             <div className="stack-form">
               <div className="form-grid form-grid-2">
-                <Field label="Code">
+                <Field label="Код">
                   <input
                     disabled={Boolean(selectedCipherId)}
                     onChange={(event) => setCipherForm((current) => ({ ...current, code: event.target.value }))}
@@ -310,28 +310,28 @@ export function AdminPage() {
                     value={cipherForm.difficulty}
                   />
                 </Field>
-                <Field label="Edited by">
+                <Field label="Редактор">
                   <input onChange={(event) => setCipherForm((current) => ({ ...current, editedBy: event.target.value }))} value={cipherForm.editedBy} />
                 </Field>
               </div>
 
-              <Field label="Summary">
+              <Field label="Краткое описание">
                 <textarea onChange={(event) => setCipherForm((current) => ({ ...current, summary: event.target.value }))} rows={3} value={cipherForm.summary} />
               </Field>
-              <Field label="Description">
+              <Field label="Описание">
                 <textarea onChange={(event) => setCipherForm((current) => ({ ...current, description: event.target.value }))} rows={6} value={cipherForm.description} />
               </Field>
-              <Field label="Example">
+              <Field label="Пример">
                 <textarea onChange={(event) => setCipherForm((current) => ({ ...current, example: event.target.value }))} rows={3} value={cipherForm.example} />
               </Field>
-              <Field label="Change summary">
+              <Field label="Комментарий к изменению">
                 <input
                   onChange={(event) => setCipherForm((current) => ({ ...current, changeSummary: event.target.value }))}
                   value={cipherForm.changeSummary}
                 />
               </Field>
 
-              <Field hint="GUID-список задаётся чекбоксами из исторических событий." label="Связанные события">
+              <Field hint="Выберите исторические события, связанные с карточкой." label="Связанные события">
                 <div className="checkbox-grid">
                   {events.map((event) => (
                     <label className="checkbox-row" key={event.id}>
@@ -420,16 +420,16 @@ export function AdminPage() {
                 </Field>
               </div>
 
-              <Field label="Summary">
+              <Field label="Краткое описание">
                 <textarea onChange={(event) => setEventForm((current) => ({ ...current, summary: event.target.value }))} rows={3} value={eventForm.summary} />
               </Field>
-              <Field label="Description">
+              <Field label="Описание">
                 <textarea onChange={(event) => setEventForm((current) => ({ ...current, description: event.target.value }))} rows={6} value={eventForm.description} />
               </Field>
-              <Field hint="Через запятую" label="Participants">
+              <Field hint="Через запятую" label="Участники">
                 <input onChange={(event) => setEventForm((current) => ({ ...current, participants: fromCsv(event.target.value) }))} value={toCsv(eventForm.participants)} />
               </Field>
-              <Field hint="Через запятую, например `caesar, vigenere`" label="Cipher codes">
+              <Field hint="Через запятую, например caesar, vigenere" label="Коды шифров">
                 <input onChange={(event) => setEventForm((current) => ({ ...current, cipherCodes: fromCsv(event.target.value) }))} value={toCsv(eventForm.cipherCodes)} />
               </Field>
 
@@ -501,7 +501,7 @@ export function AdminPage() {
                 </Field>
               </div>
 
-              <Field label="Summary">
+              <Field label="Краткое описание">
                 <textarea onChange={(event) => setCollectionForm((current) => ({ ...current, summary: event.target.value }))} rows={4} value={collectionForm.summary} />
               </Field>
 
@@ -525,7 +525,7 @@ export function AdminPage() {
                 </div>
               </Field>
 
-              <Field label="Cipher codes">
+              <Field label="Коды шифров">
                 <div className="checkbox-grid">
                   {ciphers.map((cipher) => (
                     <label className="checkbox-row" key={cipher.code}>

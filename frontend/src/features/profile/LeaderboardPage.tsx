@@ -47,9 +47,9 @@ export function LeaderboardPage() {
   return (
     <div className="page-stack">
       <PageIntro
-        eyebrow="Leaderboard"
-        title="Рейтинг пользователей по score и количеству верных тренировок."
-        description="Эта страница требует авторизацию и показывает агрегированные данные из progress-сервиса. Сортировка повторяет backend: score, затем correctChallenges."
+        eyebrow="Лидерборд"
+        title="Рейтинг пользователей по очкам и количеству верных тренировок."
+        description="Таблица показывает лучших игроков и помогает сравнить собственный прогресс с результатами команды."
       />
 
       {loading ? <LoadingBlock label="Собираю таблицу лидеров..." /> : null}
@@ -63,7 +63,7 @@ export function LeaderboardPage() {
                 <span>#{entry.rank}</span>
                 <h3>{entry.userName}</h3>
                 <strong>{entry.score}</strong>
-                <small>{entry.correctChallenges} correct challenge(s)</small>
+                <small>{entry.correctChallenges} верных заданий</small>
               </article>
             ))}
           </section>
@@ -75,8 +75,8 @@ export function LeaderboardPage() {
                   <tr>
                     <th>Место</th>
                     <th>Пользователь</th>
-                    <th>Score</th>
-                    <th>Correct</th>
+                    <th>Очки</th>
+                    <th>Верные ответы</th>
                     <th>Статус</th>
                   </tr>
                 </thead>

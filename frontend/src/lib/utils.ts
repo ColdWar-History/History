@@ -25,7 +25,7 @@ export function formatApiError(error: unknown): string {
     return error.message;
   }
 
-  return "Не удалось выполнить запрос к gateway.";
+  return "Не удалось выполнить запрос. Попробуйте ещё раз.";
 }
 
 export function roleLabel(role: string): string {

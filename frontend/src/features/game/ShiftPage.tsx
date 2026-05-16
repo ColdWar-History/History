@@ -71,9 +71,9 @@ export function ShiftPage() {
   return (
     <div className="page-stack">
       <PageIntro
-        eyebrow="Inspector Shift"
+        eyebrow="Инспектор связи"
         title="Игровой режим «Инспектор связи»."
-        description="Фронт стартует смену, показывает поток сообщений, принимает решение `allow/reject/escalate`, отправляет его в backend и строит финальный отчёт по смене."
+        description="Запустите смену, изучайте поток перехваченных сообщений и принимайте решения по каждому случаю."
       />
 
       {error ? <ErrorBlock message={error} /> : null}
@@ -135,7 +135,7 @@ export function ShiftPage() {
               </article>
 
               <article className="stack-card">
-                <Field hint="Поле уходит в `decodedMessage`, даже если backend пока не валидирует его содержимое." label="Черновик расшифровки">
+                <Field hint="Можно оставить заметку с предполагаемой расшифровкой." label="Черновик расшифровки">
                   <textarea onChange={(event) => setDecodedMessage(event.target.value)} rows={5} value={decodedMessage} />
                 </Field>
 
@@ -157,14 +157,14 @@ export function ShiftPage() {
           ) : (
             <div className="status-block">
               <strong>Нет активного сообщения</strong>
-              <p>Запусти смену, чтобы открыть очередь сообщений. Когда все решения будут отправлены, backend вернёт отчёт по смене.</p>
+              <p>Запусти смену, чтобы открыть очередь сообщений. Когда все решения будут отправлены, появится итоговый отчёт.</p>
             </div>
           )}
         </Panel>
       </div>
 
       {report ? (
-        <Panel subtitle="Финальный отчёт из `/api/game/shifts/{shiftId}/report`" title="Итоги смены">
+        <Panel subtitle="Финальный разбор ваших решений" title="Итоги смены">
           <section className="metric-grid">
             <div className="metric-card">
               <span>Общий счёт</span>

@@ -146,7 +146,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         await api.auth.logout(current.refreshToken);
       } catch {
-        // Local logout still wins if backend token is already invalidated.
+        // Local logout still wins if the remote session is already invalidated.
       }
     }
 

@@ -56,9 +56,9 @@ export function AuthPage() {
   return (
     <div className="page-stack">
       <PageIntro
-        eyebrow="Auth Flow"
-        title="Регистрация, логин, refresh и автоматический возврат в сценарий."
-        description="Фронт хранит opaque access/refresh tokens, повторяет запрос после refresh при `401` и сбрасывает сессию, если refresh тоже неуспешен."
+        eyebrow="Вход"
+        title="Войдите, чтобы сохранять прогресс и открывать профиль."
+        description="Создайте аккаунт или используйте тестовый доступ для проверки редакторского раздела."
       />
 
       <div className="split-grid auth-layout">
@@ -104,15 +104,11 @@ export function AuthPage() {
           </form>
         </Panel>
 
-        <Panel subtitle="Что уже есть в backend MVP" title="Оперативные заметки">
+        <Panel subtitle="Доступные возможности" title="Быстрый старт">
           <div className="stack-list">
             <article className="stack-card">
-              <h3>Refresh flow</h3>
-              <p>При `401` фронт сначала бьёт в `/api/auth/refresh`, обновляет локальную сессию и только потом повторяет исходный запрос.</p>
-            </article>
-            <article className="stack-card">
               <h3>Тестовый админ</h3>
-              <p>`admin` / `Admin123!` — сид уже описан в backend README и подходит для проверки редакторского раздела.</p>
+              <p>Логин admin и пароль Admin123! подходят для проверки редакторского раздела.</p>
             </article>
             <article className="stack-card">
               <h3>Гостевой режим остаётся доступным</h3>

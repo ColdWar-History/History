@@ -9,7 +9,7 @@ const primaryLinks = [
   { to: "/timeline", label: "Таймлайн" },
   { to: "/lab", label: "Криптолаб" },
   { to: "/training", label: "Тренировка" },
-  { to: "/daily", label: "Daily" },
+  { to: "/daily", label: "Ежедневный" },
   { to: "/shift", label: "Инспектор" }
 ];
 
@@ -26,7 +26,7 @@ export function Layout() {
             <span>Cold War</span>
             <strong>History</strong>
           </NavLink>
-          <p>Интерактивный фронтенд для исторического контента, криптографии и игровых сценариев.</p>
+          <p>История, шифры и аналитические миссии.</p>
         </div>
 
         <nav className="nav-cluster" aria-label="Основная навигация">
@@ -94,8 +94,8 @@ export function Layout() {
       </main>
 
       <footer className="footer-bar">
-        <span>Gateway target: `http://localhost:7000`</span>
-        <span>Frontend honours opaque tokens, refresh flow and role-based UI gates.</span>
+        <span>Cold War History</span>
+        <span>Исторические материалы, шифры и игровые сценарии в одном пространстве.</span>
       </footer>
     </div>
   );
