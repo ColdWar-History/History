@@ -20,7 +20,8 @@ public sealed class CryptoOperationsService(
                 item.Category,
                 item.Era,
                 item.Difficulty,
-                item.Parameters.Select(parameter => new CipherParameterDefinition(parameter.Name, parameter.Label, parameter.Type, parameter.IsRequired, parameter.Description)).ToArray()))
+                item.Parameters.Select(parameter => new CipherParameterDefinition(parameter.Name, parameter.Label, parameter.Type, parameter.IsRequired, parameter.Description)).ToArray(),
+                item.Limitations.ToArray()))
             .ToArray();
 
     public async Task<OperationResult<CryptoTransformResponse>> ExecuteAsync(CryptoTransformRequest request, CurrentUser currentUser, CancellationToken cancellationToken)

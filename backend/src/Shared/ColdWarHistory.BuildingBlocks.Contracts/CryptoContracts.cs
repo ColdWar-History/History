@@ -2,7 +2,14 @@ namespace ColdWarHistory.BuildingBlocks.Contracts;
 
 public sealed record CipherParameterDefinition(string Name, string Label, string Type, bool IsRequired, string? Description);
 
-public sealed record CipherCatalogItem(string Code, string Name, string Category, string Era, int Difficulty, IReadOnlyCollection<CipherParameterDefinition> Parameters);
+public sealed record CipherCatalogItem(
+    string Code,
+    string Name,
+    string Category,
+    string Era,
+    int Difficulty,
+    IReadOnlyCollection<CipherParameterDefinition> Parameters,
+    IReadOnlyCollection<string> Limitations);
 
 public sealed record CryptoTransformRequest(
     string CipherCode,
