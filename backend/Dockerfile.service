@@ -1,0 +1,16 @@
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+WORKDIR /src
+
+ARG PROJECT_PATH
+COPY . .
+RUN dotnet publish "$PROJECT_PATH" -c Release -o /app /p:UseAppHost=false
+
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
+WORKDIR /app
+
+ARG SERVICE_DLL
+ENV SERVICE_DLL=$SERVICE_DLL
+
+COPY --from=build /app .
+
+ENTRYPOINT ["sh", "-c", "dotnet \"$SERVICE_DLL\""]
