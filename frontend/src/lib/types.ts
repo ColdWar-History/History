@@ -88,6 +88,7 @@ export interface CipherCatalogItem {
   era: string;
   difficulty: number;
   parameters: CipherParameterDefinition[];
+  limitations?: string[];
 }
 
 export interface CryptoTransformRequest {

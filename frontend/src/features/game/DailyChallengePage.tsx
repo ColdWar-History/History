@@ -67,12 +67,12 @@ export function DailyChallengePage() {
   return (
     <div className="page-stack">
       <PageIntro
-        eyebrow="Daily Challenge"
+        eyebrow="Ежедневный"
         title="Ежедневный вызов, который меняется по дате."
-        description="Daily challenge тянется из game-сервиса и строится вокруг сегодняшнего шаблона cipherCode. Если backend обновил день, фронт сразу покажет новую задачу."
+        description="Каждый день здесь появляется новая короткая миссия по одному из шифров."
       />
 
-      {loading ? <LoadingBlock label="Запрашиваю daily challenge..." /> : null}
+      {loading ? <LoadingBlock label="Загружаю ежедневный вызов..." /> : null}
       {error ? <ErrorBlock message={error} /> : null}
 
       {daily ? (
@@ -82,7 +82,7 @@ export function DailyChallengePage() {
               <div className="inline-meta">
                 <Badge>{daily.challenge.cipherCode}</Badge>
                 <span>{formatDate(daily.date)}</span>
-                <span>Base score: {daily.challenge.baseScore}</span>
+                <span>Базовые очки: {daily.challenge.baseScore}</span>
               </div>
               <h3>{daily.challenge.prompt}</h3>
               <pre className="output-box">{daily.challenge.input}</pre>
@@ -90,15 +90,15 @@ export function DailyChallengePage() {
             </article>
           </Panel>
 
-          <Panel subtitle="Ответ сохраняется тем же submit-endpoint" title="Решение">
+          <Panel subtitle="Введите ответ и проверьте решение" title="Решение">
             <form className="stack-form" onSubmit={submit}>
               <Field label="Ответ">
-                <input onChange={(event) => setAnswer(event.target.value)} placeholder="Введите plaintext..." value={answer} />
+                <input onChange={(event) => setAnswer(event.target.value)} placeholder="Введите расшифровку..." value={answer} />
               </Field>
 
               {showHint ? (
                 <div className="status-inline">
-                  Подсказка: режим `{daily.challenge.expectedMode}`, параметры `{JSON.stringify(daily.challenge.parameters)}`.
+                  Подсказка: режим {daily.challenge.expectedMode}, параметры {JSON.stringify(daily.challenge.parameters)}.
                 </div>
               ) : null}
 

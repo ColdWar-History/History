@@ -104,7 +104,7 @@ async function parseResponse<T>(response: Response): Promise<T> {
 
 function mapStatusMessage(status: number): string {
   if (status === 400) {
-    return "Запрос отклонён gateway или сервисом. Проверь введённые данные.";
+    return "Запрос отклонён. Проверьте введённые данные.";
   }
 
   if (status === 401) {
@@ -115,7 +115,7 @@ function mapStatusMessage(status: number): string {
     return "Запрошенный ресурс не найден.";
   }
 
-  return "Gateway вернул ошибку.";
+  return "Сервис временно недоступен или вернул ошибку.";
 }
 
 async function toApiError(response: Response): Promise<ApiError> {

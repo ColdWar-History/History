@@ -79,15 +79,15 @@ export function CiphersPage() {
   return (
     <div className="page-stack">
       <PageIntro
-        eyebrow="Cipher Catalog"
+        eyebrow="Каталог шифров"
         title="Каталог шифров с фильтрами по поиску, категории и эпохе."
-        description="Публичная витрина использует только published-данные из content-сервиса. Карточки ведут в детальное досье и прямо в криптолабораторию."
+        description="Карточки ведут в детальное досье и позволяют сразу открыть выбранный шифр в криптолаборатории."
       />
 
-      <Panel subtitle="Фильтры работают через gateway query params" title="Поиск">
+      <Panel subtitle="Настройте выдачу по названию, категории и эпохе" title="Поиск">
         <div className="form-grid form-grid-4">
           <Field label="Поиск">
-            <input onChange={(event) => setSearch(event.target.value)} placeholder="Caesar, rail, разведка..." value={search} />
+            <input onChange={(event) => setSearch(event.target.value)} placeholder="Цезарь, рельсы, разведка..." value={search} />
           </Field>
 
           <Field label="Категория">

@@ -46,9 +46,9 @@ export function ProfilePage() {
   return (
     <div className="page-stack">
       <PageIntro
-        eyebrow="Progress Profile"
+        eyebrow="Профиль"
         title={auth.user ? `Профиль агента ${auth.user.userName}` : "Профиль пользователя"}
-        description="Панель прогресса показывает последние криптооперации, ачивки, общие метрики и суммарный score из progress-сервиса."
+        description="Панель прогресса показывает последние криптооперации, достижения, общие метрики и суммарный рейтинг."
       />
 
       {loading ? <LoadingBlock label="Поднимаю профиль и историю операций..." /> : null}
@@ -57,11 +57,11 @@ export function ProfilePage() {
       {profile ? (
         <>
           <section className="metric-grid">
-            <MetricCard detail="Общий рейтинг" label="Score" value={profile.metrics.totalScore} />
-            <MetricCard detail="Сколько заданий завершено" label="Challenges" value={profile.metrics.challengesCompleted} />
-            <MetricCard detail="Количество верных ответов" label="Correct" value={profile.metrics.correctChallenges} />
-            <MetricCard detail="Смены инспектора" label="Shift reports" value={profile.metrics.shiftReportsCompleted} />
-            <MetricCard detail="История лаборатории" label="Crypto ops" value={profile.metrics.cryptoOperations} />
+            <MetricCard detail="Общий рейтинг" label="Очки" value={profile.metrics.totalScore} />
+            <MetricCard detail="Сколько заданий завершено" label="Задания" value={profile.metrics.challengesCompleted} />
+            <MetricCard detail="Количество верных ответов" label="Верные ответы" value={profile.metrics.correctChallenges} />
+            <MetricCard detail="Смены инспектора" label="Смены" value={profile.metrics.shiftReportsCompleted} />
+            <MetricCard detail="История лаборатории" label="Криптооперации" value={profile.metrics.cryptoOperations} />
           </section>
 
           <div className="split-grid">
@@ -79,11 +79,11 @@ export function ProfilePage() {
                       </div>
                       <div className="comparison-grid">
                         <div>
-                          <strong>Input</strong>
+                          <strong>Исходный текст</strong>
                           <pre>{operation.input}</pre>
                         </div>
                         <div>
-                          <strong>Output</strong>
+                          <strong>Результат</strong>
                           <pre>{operation.output}</pre>
                         </div>
                       </div>
@@ -101,7 +101,6 @@ export function ProfilePage() {
                   ))}
                 </div>
               )}
-              <small>Параметры операции backend пока не возвращает в profile DTO, поэтому replay восстанавливает шифр, режим и исходный input.</small>
             </Panel>
 
             <Panel subtitle="Разблокировки и milestones" title="Ачивки">

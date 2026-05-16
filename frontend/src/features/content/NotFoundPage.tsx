@@ -8,7 +8,7 @@ export function NotFoundPage() {
       <PageIntro
         eyebrow="404"
         title="Маршрут не найден"
-        description="Похоже, этого экрана нет в текущем фронтенде. Вернись на главную или открой каталог материалов."
+        description="Похоже, такой страницы нет. Вернитесь на главную или откройте каталог материалов."
         actions={
           <>
             <Link className="button" to="/">

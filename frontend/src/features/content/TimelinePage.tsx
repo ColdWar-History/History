@@ -68,12 +68,12 @@ export function TimelinePage() {
   return (
     <div className="page-stack">
       <PageIntro
-        eyebrow="Historical Timeline"
+        eyebrow="Таймлайн"
         title="Фильтруемый таймлайн по региону, году и теме."
-        description="Лента событий использует published-данные content-сервиса и связывает исторические карточки с шифрами и тематическими подборками."
+        description="Лента связывает исторические события с шифрами и тематическими подборками."
       />
 
-      <Panel subtitle="Фильтры `region`, `year`, `topic` идут напрямую в gateway" title="Навигация по эпохе">
+      <Panel subtitle="Отберите события по региону, году или теме" title="Навигация по эпохе">
         <div className="form-grid form-grid-4">
           <Field label="Регион">
             <select onChange={(event) => setRegion(event.target.value)} value={region}>
@@ -120,7 +120,7 @@ export function TimelinePage() {
 
       {state ? (
         <>
-          <Panel subtitle="Подборки сохраняют curated-маршрут по событиям" title="Тематические коллекции">
+          <Panel subtitle="Кураторские маршруты по событиям" title="Тематические коллекции">
             <div className="cards-grid cards-grid-3">
               {state.collections.map((collection) => (
                 <article className="card-item" key={collection.id}>

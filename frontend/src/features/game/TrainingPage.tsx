@@ -86,9 +86,9 @@ export function TrainingPage() {
   return (
     <div className="page-stack">
       <PageIntro
-        eyebrow="Training Mode"
+        eyebrow="Тренировка"
         title="Генерация тренировок по выбранному шифру и сложности."
-        description="Экран учитывает MVP-особенность backend: `training/generate` получает `cipherCode` и `difficulty` через query string, а ответ на задание уходит отдельным submit-запросом."
+        description="Выберите шифр и сложность, получите задание и проверьте расшифровку."
       />
 
       {loading ? <LoadingBlock label="Загружаю каталог для тренировок..." /> : null}
@@ -96,7 +96,7 @@ export function TrainingPage() {
 
       {!loading ? (
         <div className="split-grid">
-          <Panel subtitle="Сначала поднимаем задание, затем отправляем ответ" title="Генерация задания">
+          <Panel subtitle="Настройте параметры будущей миссии" title="Генерация задания">
             <div className="stack-form">
               <div className="form-grid form-grid-2">
                 <Field label="Шифр">
@@ -124,7 +124,7 @@ export function TrainingPage() {
             </div>
           </Panel>
 
-          <Panel subtitle="Показываем prompt, input и результат проверки" title="Оперативная панель">
+          <Panel subtitle="Задание, ответ и итоговая проверка" title="Оперативная панель">
             {challenge ? (
               <>
                 <article className="stack-card">
@@ -132,20 +132,20 @@ export function TrainingPage() {
                     <Badge>{challenge.cipherCode}</Badge>
                     <Badge>{difficultyLabel(challenge.difficulty)}</Badge>
                     <span>{formatDateTime(challenge.generatedAt)}</span>
-                    <span>Base score: {challenge.baseScore}</span>
+                    <span>Базовые очки: {challenge.baseScore}</span>
                   </div>
                   <h3>{challenge.prompt}</h3>
                   <pre className="output-box">{challenge.input}</pre>
                 </article>
 
                 <form className="stack-form" onSubmit={submitAnswer}>
-                  <Field hint="Введи предполагаемый plaintext." label="Ответ">
+                  <Field hint="Введите предполагаемый открытый текст." label="Ответ">
                     <input onChange={(event) => setAnswer(event.target.value)} placeholder="Введите расшифровку..." value={answer} />
                   </Field>
 
                   {showHint ? (
                     <div className="status-inline">
-                      Подсказка: режим `{challenge.expectedMode}`, параметры `{JSON.stringify(challenge.parameters)}`. За подсказку backend спишет 20 очков.
+                      Подсказка: режим {challenge.expectedMode}, параметры {JSON.stringify(challenge.parameters)}. За подсказку снимается 20 очков.
                     </div>
                   ) : null}
 
@@ -190,7 +190,7 @@ export function TrainingPage() {
             ) : (
               <div className="status-block">
                 <strong>Задание ещё не создано</strong>
-                <p>Выбери шифр и сложность, затем создай миссию. После submit правильный результат запишется в progress для авторизованного пользователя.</p>
+                <p>Выбери шифр и сложность, затем создай миссию. Если вы вошли в аккаунт, успешный результат появится в профиле.</p>
               </div>
             )}
           </Panel>

@@ -55,9 +55,9 @@ export function HomePage() {
   return (
     <div className="page-stack">
       <PageIntro
-        eyebrow="Cold War Operational Frontend"
+        eyebrow="Cold War History"
         title="История шифров, таймлайн Холодной войны и игровые миссии в одном интерфейсе."
-        description="Фронтенд собран вокруг gateway-контрактов MVP: публичный контент, криптолаборатория, тренировки, daily, инспектор связи, профиль и редакторские действия по ролям."
+        description="Исследуйте исторические материалы, разбирайте классические шифры и проходите игровые задания с сохранением прогресса в профиле."
         actions={
           <>
             <Link className="button" to="/lab">
@@ -70,7 +70,7 @@ export function HomePage() {
         }
       />
 
-      {loading ? <LoadingBlock label="Подтягиваю содержимое из content-сервиса..." /> : null}
+      {loading ? <LoadingBlock label="Загружаю материалы..." /> : null}
       {error ? <ErrorBlock message={error} retryLabel="Повторить" onRetry={() => window.location.reload()} /> : null}
 
       {snapshot ? (
@@ -93,7 +93,7 @@ export function HomePage() {
             <article className="feature-card">
               <span>02</span>
               <h3>Криптолаборатория</h3>
-              <p>Параметры тянутся из `/api/crypto/catalog`, а результат отображает выход, шаги алгоритма и ошибки валидации из backend.</p>
+              <p>Выбирайте алгоритм, задавайте параметры и смотрите результат вместе с понятным пошаговым разбором преобразования.</p>
               <Link className="text-link" to="/lab">
                 Запустить преобразование
               </Link>
@@ -101,7 +101,7 @@ export function HomePage() {
             <article className="feature-card">
               <span>03</span>
               <h3>Игровой контур</h3>
-              <p>Training, daily и смена инспектора работают поверх game-сервиса. При авторизации очки и операции уходят в progress и видны в профиле.</p>
+              <p>Тренировки, ежедневный вызов и смена инспектора помогают закрепить шифры через короткие миссии и решения.</p>
               <Link className="text-link" to="/shift">
                 Начать смену
               </Link>
