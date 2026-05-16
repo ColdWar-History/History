@@ -92,11 +92,6 @@ export function Layout() {
       <main className="content-shell">
         <Outlet />
       </main>
-
-      <footer className="footer-bar">
-        <span>Cold War History</span>
-        <span>Исторические материалы, шифры и игровые сценарии в одном пространстве.</span>
-      </footer>
     </div>
   );
 }

@@ -7,6 +7,37 @@ import { api } from "../../lib/api";
 import type { CipherCatalogItem, CryptoTransformResponse } from "../../lib/types";
 import { formatApiError, formatDateTime, modeLabel } from "../../lib/utils";
 
+const limitationTranslations: Record<string, string> = {
+  "Works with the Latin A-Z alphabet; letters are uppercased.": "Работает с латинским алфавитом A-Z; буквы приводятся к верхнему регистру.",
+  "Non-Latin letters are left unchanged because they are outside the alphabet table.":
+    "Нелатинские символы остаются без изменений, потому что не входят в таблицу алфавита.",
+  "This is a historical teaching cipher and is trivial to break by frequency analysis or brute force.":
+    "Это учебный исторический шифр: его легко взломать перебором сдвига или частотным анализом.",
+  "There is no secret key, so anyone who recognizes Atbash can reverse it immediately.":
+    "Секретного ключа нет, поэтому распознанный Атбаш сразу обращается обратно.",
+  "The key must contain at least one Latin letter; other key characters are ignored.":
+    "Ключ должен содержать хотя бы одну латинскую букву; остальные символы ключа игнорируются.",
+  "Only Latin A-Z letters are shifted; punctuation, spaces and digits are preserved and do not advance the key.":
+    "Сдвигаются только латинские буквы A-Z; пробелы, цифры и пунктуация сохраняются и не продвигают ключ.",
+  "A repeated key is vulnerable to classical cryptanalysis when enough text is available.":
+    "Повторяющийся ключ уязвим к классическому криптоанализу при достаточном объёме текста.",
+  "The rails parameter must be an integer greater than 1.": "Параметр рельсов должен быть целым числом больше 1.",
+  "Characters are uppercased, but spaces, punctuation and digits are still transposed.":
+    "Символы приводятся к верхнему регистру, но пробелы, пунктуация и цифры тоже участвуют в перестановке.",
+  "This is a transposition cipher only; if the rail count is known, recovery is straightforward.":
+    "Это только шифр перестановки: если известно число рельсов, восстановление обычно несложное.",
+  "The key must contain at least one Latin letter; repeated key letters are ordered from left to right.":
+    "Ключ должен содержать хотя бы одну латинскую букву; повторяющиеся буквы упорядочиваются слева направо.",
+  "Input is normalized to Latin letters only, so spaces, punctuation, digits and non-Latin letters are removed.":
+    "Входной текст нормализуется до латинских букв, поэтому пробелы, пунктуация, цифры и нелатинские символы удаляются.",
+  "The implementation uses an unpadded ragged grid, so decrypt can preserve a real trailing X.":
+    "Реализация использует неровную таблицу без добивки, поэтому расшифровка сохраняет настоящий завершающий X."
+};
+
+function localizeLimitation(limitation: string): string {
+  return limitationTranslations[limitation] ?? limitation;
+}
+
 export function CryptoLabPage() {
   const auth = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -182,7 +213,7 @@ export function CryptoLabPage() {
                   <strong>Ограничения алгоритма</strong>
                   <ul className="simple-list">
                     {(currentCipher.limitations ?? []).map((limitation) => (
-                      <li key={limitation}>{limitation}</li>
+                      <li key={limitation}>{localizeLimitation(limitation)}</li>
                     ))}
                   </ul>
                 </div>
