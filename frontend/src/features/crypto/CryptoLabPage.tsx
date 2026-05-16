@@ -130,9 +130,9 @@ export function CryptoLabPage() {
   return (
     <div className="page-stack">
       <PageIntro
-        eyebrow="Crypto Lab"
+        eyebrow="Криптолаборатория"
         title="Параметризуемая лаборатория шифрования и дешифрования."
-        description="Экран использует `/api/crypto/catalog` для динамической формы и `/api/crypto/transform` для результата со steps[]. Если пользователь вошёл, операция автоматически попадёт в историю профиля."
+        description="Выберите алгоритм, заполните параметры и получите результат с пошаговым объяснением преобразования."
         actions={
           auth.isAuthenticated ? (
             <Link className="button secondary" to="/profile">
@@ -151,7 +151,7 @@ export function CryptoLabPage() {
 
       {!loading && currentCipher ? (
         <div className="split-grid lab-layout">
-          <Panel subtitle="Форма строится из catalog parameters" title="Операция">
+          <Panel subtitle="Настройте алгоритм и исходное сообщение" title="Операция">
             <form className="stack-form" onSubmit={handleSubmit}>
               <div className="form-grid form-grid-2">
                 <Field label="Шифр">
@@ -177,7 +177,18 @@ export function CryptoLabPage() {
                 <Badge>Сложность {currentCipher.difficulty}/3</Badge>
               </div>
 
-              <Field hint="Произвольный текст, который уйдёт в body как `input`." label="Сообщение">
+              {(currentCipher.limitations?.length ?? 0) > 0 ? (
+                <div className="status-block">
+                  <strong>Ограничения алгоритма</strong>
+                  <ul className="simple-list">
+                    {(currentCipher.limitations ?? []).map((limitation) => (
+                      <li key={limitation}>{limitation}</li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+
+              <Field hint="Произвольный текст для шифрования или расшифровки." label="Сообщение">
                 <textarea onChange={(event) => setInput(event.target.value)} placeholder="Введите текст..." rows={7} value={input} />
               </Field>
 
@@ -213,14 +224,13 @@ export function CryptoLabPage() {
             </form>
           </Panel>
 
-          <Panel subtitle="Backend возвращает output, steps и validationMessages" title="Результат">
+          <Panel subtitle="Готовый текст и объяснение преобразования" title="Результат">
             {result ? (
               <div className="stack-list">
                 <article className="stack-card result-card">
                   <div className="inline-meta">
                     <Badge>{modeLabel(result.mode)}</Badge>
                     <span>{formatDateTime(result.processedAt)}</span>
-                    {result.operationId ? <span>operationId: {result.operationId.slice(0, 8)}</span> : null}
                   </div>
                   <h3>Выход</h3>
                   <pre className="output-box">{result.output}</pre>
@@ -233,7 +243,7 @@ export function CryptoLabPage() {
 
                 {result.validationMessages.length > 0 ? (
                   <article className="stack-card">
-                    <h3>Validation messages</h3>
+                    <h3>Сообщения проверки</h3>
                     <ul className="simple-list">
                       {result.validationMessages.map((message) => (
                         <li key={message}>{message}</li>
@@ -261,7 +271,7 @@ export function CryptoLabPage() {
             ) : (
               <div className="status-block">
                 <strong>Ожидание операции</strong>
-                <p>После отправки формы здесь появятся `output`, диагностические сообщения и раскладка шагов алгоритма.</p>
+                <p>После отправки формы здесь появятся готовый текст, диагностические сообщения и раскладка шагов алгоритма.</p>
               </div>
             )}
           </Panel>
