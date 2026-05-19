@@ -21,7 +21,8 @@ public sealed record CipherParameter(string Name, string Label, string Type, boo
 
 public abstract class CipherAlgorithmBase : ICipherAlgorithm
 {
-    protected const string Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private const string LatinAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private const string CyrillicAlphabet = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
 
     public abstract string Code { get; }
     public abstract string Name { get; }
@@ -35,24 +36,65 @@ public abstract class CipherAlgorithmBase : ICipherAlgorithm
     public abstract CipherExecutionResult Decrypt(string input, IReadOnlyDictionary<string, string> parameters);
 
     protected static string NormalizeLettersOnly(string input) =>
-        new(input.ToUpperInvariant().Where(char.IsLetter).ToArray());
+        new(input.ToUpperInvariant().Where(IsSupportedLetter).ToArray());
 
     protected static string ShiftBy(string input, int shift)
     {
         var buffer = input.ToUpperInvariant().ToCharArray();
         for (var index = 0; index < buffer.Length; index++)
         {
-            var character = buffer[index];
-            var alphabetIndex = Alphabet.IndexOf(character);
-            if (alphabetIndex < 0)
-            {
-                continue;
-            }
-
-            buffer[index] = Alphabet[(alphabetIndex + shift + Alphabet.Length) % Alphabet.Length];
+            buffer[index] = ShiftCharacter(buffer[index], shift);
         }
 
         return new string(buffer);
+    }
+
+    protected static char MirrorCharacter(char character)
+    {
+        var alphabet = GetAlphabet(character);
+        if (alphabet is null)
+        {
+            return character;
+        }
+
+        var alphabetIndex = alphabet.IndexOf(character);
+        return alphabet[alphabet.Length - 1 - alphabetIndex];
+    }
+
+    protected static int GetShift(char character)
+    {
+        var alphabet = GetAlphabet(character);
+        if (alphabet is null)
+        {
+            throw new InvalidOperationException("Сдвиг можно получить только для поддерживаемой буквы.");
+        }
+
+        return alphabet.IndexOf(character);
+    }
+
+    protected static bool IsSupportedLetter(char character) => GetAlphabet(character) is not null;
+
+    private static char ShiftCharacter(char character, int shift)
+    {
+        var alphabet = GetAlphabet(character);
+        if (alphabet is null)
+        {
+            return character;
+        }
+
+        var alphabetIndex = alphabet.IndexOf(character);
+        return alphabet[(alphabetIndex + shift + alphabet.Length) % alphabet.Length];
+    }
+
+    private static string? GetAlphabet(char character)
+    {
+        var upper = char.ToUpperInvariant(character);
+        if (LatinAlphabet.Contains(upper))
+        {
+            return LatinAlphabet;
+        }
+
+        return CyrillicAlphabet.Contains(upper) ? CyrillicAlphabet : null;
     }
 }
 
@@ -66,8 +108,8 @@ public sealed class CaesarCipher : CipherAlgorithmBase
     public override IReadOnlyCollection<CipherParameter> Parameters => [new("shift", "Сдвиг", "integer", true, "Величина сдвига букв")];
     public override IReadOnlyCollection<string> Limitations =>
     [
-        "Работает с латинским алфавитом A-Z; буквы приводятся к верхнему регистру.",
-        "Нелатинские символы остаются без изменений, потому что не входят в таблицу алфавита.",
+        "Работает с латинским A-Z и русским А-Я/Ё алфавитами; буквы приводятся к верхнему регистру.",
+        "Символы вне поддерживаемых алфавитов остаются без изменений.",
         "Это учебный исторический шифр: его легко взломать перебором сдвига или частотным анализом."
     ];
 
@@ -78,7 +120,7 @@ public sealed class CaesarCipher : CipherAlgorithmBase
         var output = ShiftBy(normalized, shift);
         return new CipherExecutionResult(output, Array.Empty<string>(), [
             new CipherStep(1, "Нормализация", "Приводим текст к верхнему регистру для предсказуемой обработки.", normalized),
-            new CipherStep(2, "Сдвиг алфавита", $"Сдвигаем каждую латинскую букву на {shift} позиций.", output)
+            new CipherStep(2, "Сдвиг алфавита", $"Сдвигаем каждую поддерживаемую букву на {shift} позиций.", output)
         ]);
     }
 
@@ -109,9 +151,9 @@ public sealed class AtbashCipher : CipherAlgorithmBase
     public override IReadOnlyCollection<CipherParameter> Parameters => [];
     public override IReadOnlyCollection<string> Limitations =>
     [
-        "Работает с латинским алфавитом A-Z; буквы приводятся к верхнему регистру.",
+        "Работает с латинским A-Z и русским А-Я/Ё алфавитами; буквы приводятся к верхнему регистру.",
         "Секретного ключа нет, поэтому распознанный Атбаш сразу обращается обратно.",
-        "Нелатинские символы остаются без изменений, потому что не входят в таблицу алфавита."
+        "Символы вне поддерживаемых алфавитов остаются без изменений."
     ];
 
     public override CipherExecutionResult Encrypt(string input, IReadOnlyDictionary<string, string> parameters) => Transform(input);
@@ -123,16 +165,12 @@ public sealed class AtbashCipher : CipherAlgorithmBase
         var buffer = normalized.ToCharArray();
         for (var index = 0; index < buffer.Length; index++)
         {
-            var alphabetIndex = Alphabet.IndexOf(buffer[index]);
-            if (alphabetIndex >= 0)
-            {
-                buffer[index] = Alphabet[Alphabet.Length - 1 - alphabetIndex];
-            }
+            buffer[index] = MirrorCharacter(buffer[index]);
         }
 
         var output = new string(buffer);
         return new CipherExecutionResult(output, Array.Empty<string>(), [
-            new CipherStep(1, "Зеркальная замена", "Заменяем каждую латинскую букву на симметричную букву из конца алфавита.", output)
+            new CipherStep(1, "Зеркальная замена", "Заменяем каждую поддерживаемую букву на симметричную букву из конца своего алфавита.", output)
         ]);
     }
 }
@@ -147,8 +185,8 @@ public sealed class VigenereCipher : CipherAlgorithmBase
     public override IReadOnlyCollection<CipherParameter> Parameters => [new("key", "Ключ", "string", true, "Буквенный ключ")];
     public override IReadOnlyCollection<string> Limitations =>
     [
-        "Ключ должен содержать хотя бы одну латинскую букву; остальные символы ключа игнорируются.",
-        "Сдвигаются только латинские буквы A-Z; пробелы, цифры и пунктуация сохраняются и не продвигают ключ.",
+        "Ключ должен содержать хотя бы одну латинскую или русскую букву; остальные символы ключа игнорируются.",
+        "Сдвигаются латинские A-Z и русские А-Я/Ё буквы; пробелы, цифры и пунктуация сохраняются и не продвигают ключ.",
         "Повторяющийся ключ уязвим к классическому криптоанализу при достаточном объёме текста."
     ];
 
@@ -174,16 +212,15 @@ public sealed class VigenereCipher : CipherAlgorithmBase
 
         for (var index = 0; index < inputChars.Length; index++)
         {
-            var alphabetIndex = Alphabet.IndexOf(inputChars[index]);
-            if (alphabetIndex < 0)
+            if (!IsSupportedLetter(inputChars[index]))
             {
                 output[index] = inputChars[index];
                 continue;
             }
 
-            var shift = Alphabet.IndexOf(normalizedKey[keyIndex % normalizedKey.Length]);
+            var shift = GetShift(normalizedKey[keyIndex % normalizedKey.Length]);
             var offset = encrypt ? shift : -shift;
-            output[index] = Alphabet[(alphabetIndex + offset + Alphabet.Length) % Alphabet.Length];
+            output[index] = ShiftBy(inputChars[index].ToString(), offset)[0];
             keyIndex++;
         }
 
@@ -298,8 +335,8 @@ public sealed class ColumnarTranspositionCipher : CipherAlgorithmBase
     public override IReadOnlyCollection<CipherParameter> Parameters => [new("key", "Ключ", "string", true, "Ключевое слово для порядка столбцов")];
     public override IReadOnlyCollection<string> Limitations =>
     [
-        "Ключ должен содержать хотя бы одну латинскую букву; повторяющиеся буквы упорядочиваются слева направо.",
-        "Входной текст нормализуется до латинских букв, поэтому пробелы, пунктуация, цифры и нелатинские символы удаляются.",
+        "Ключ должен содержать хотя бы одну латинскую или русскую букву; повторяющиеся буквы упорядочиваются слева направо.",
+        "Входной текст нормализуется до латинских или русских букв, поэтому пробелы, пунктуация и цифры удаляются.",
         "Реализация использует неровную таблицу без добивки, поэтому расшифровка сохраняет настоящий завершающий X."
     ];
 

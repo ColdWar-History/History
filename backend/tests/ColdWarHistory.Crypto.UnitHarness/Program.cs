@@ -23,6 +23,8 @@ internal sealed class CryptoAlgorithmTests
         CaesarUsesKnownVector();
         AtbashUsesKnownVector();
         VigenereUsesKnownVectorAndSkipsNonLetters();
+        AlphabeticCiphersSupportRussianLetters();
+        TranspositionCiphersSupportRussianLetters();
         RailFenceUsesKnownVector();
         ColumnarUsesKnownVectorWithoutPaddingLoss();
         EveryCipherRoundTripsRepresentativeText();
@@ -63,6 +65,41 @@ internal sealed class CryptoAlgorithmTests
 
         var decrypted = cipher.Decrypt(encrypted, parameters).Output;
         EnsureEqual("ATTACK AT DAWN!", decrypted, "Vigenere decrypt known vector.");
+    }
+
+    private static void AlphabeticCiphersSupportRussianLetters()
+    {
+        var caesar = new CaesarCipher();
+        var caesarParameters = new Dictionary<string, string> { ["shift"] = "1" };
+        var caesarEncrypted = caesar.Encrypt("АБВ Я!", caesarParameters).Output;
+        EnsureEqual("БВГ А!", caesarEncrypted, "Caesar should encrypt Russian letters.");
+        EnsureEqual("АБВ Я!", caesar.Decrypt(caesarEncrypted, caesarParameters).Output, "Caesar should decrypt Russian letters.");
+
+        var atbash = new AtbashCipher();
+        var atbashEncrypted = atbash.Encrypt("АБВ Я!", EmptyParameters).Output;
+        EnsureEqual("ЯЮЭ А!", atbashEncrypted, "Atbash should encrypt Russian letters.");
+        EnsureEqual("АБВ Я!", atbash.Decrypt(atbashEncrypted, EmptyParameters).Output, "Atbash should decrypt Russian letters.");
+
+        var vigenere = new VigenereCipher();
+        var vigenereParameters = new Dictionary<string, string> { ["key"] = "Б" };
+        var vigenereEncrypted = vigenere.Encrypt("АБВ Я!", vigenereParameters).Output;
+        EnsureEqual("БВГ А!", vigenereEncrypted, "Vigenere should encrypt Russian letters with a Russian key.");
+        EnsureEqual("АБВ Я!", vigenere.Decrypt(vigenereEncrypted, vigenereParameters).Output, "Vigenere should decrypt Russian letters with a Russian key.");
+    }
+
+    private static void TranspositionCiphersSupportRussianLetters()
+    {
+        var railFence = new RailFenceCipher();
+        var railFenceParameters = new Dictionary<string, string> { ["rails"] = "3" };
+        var railFenceInput = "Встреча в точке 7";
+        var railFenceEncrypted = railFence.Encrypt(railFenceInput, railFenceParameters).Output;
+        EnsureEqual(railFenceInput.ToUpperInvariant(), railFence.Decrypt(railFenceEncrypted, railFenceParameters).Output, "Rail Fence should round-trip Russian letters.");
+
+        var columnar = new ColumnarTranspositionCipher();
+        var columnarParameters = new Dictionary<string, string> { ["key"] = "КОД" };
+        var columnarInput = "Встреча в точке";
+        var columnarEncrypted = columnar.Encrypt(columnarInput, columnarParameters).Output;
+        EnsureEqual("ВСТРЕЧАВТОЧКЕ", columnar.Decrypt(columnarEncrypted, columnarParameters).Output, "Columnar should round-trip Russian letters.");
     }
 
     private static void RailFenceUsesKnownVector()
